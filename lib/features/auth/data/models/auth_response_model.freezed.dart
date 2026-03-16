@@ -1,0 +1,267 @@
+// coverage:ignore-file
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
+
+part of 'auth_response_model.dart';
+
+// **************************************************************************
+// FreezedGenerator
+// **************************************************************************
+
+T _$identity<T>(T value) => value;
+
+final _privateConstructorUsedError = UnsupportedError(
+    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+
+AuthResponseModel _$AuthResponseModelFromJson(Map<String, dynamic> json) {
+  return _AuthResponseModel.fromJson(json);
+}
+
+/// @nodoc
+mixin _$AuthResponseModel {
+  UserModel get user => throw _privateConstructorUsedError;
+  @JsonKey(name: 'access_token')
+  String get accessToken => throw _privateConstructorUsedError;
+  @JsonKey(name: 'refresh_token')
+  String? get refreshToken => throw _privateConstructorUsedError;
+  @JsonKey(name: 'token_type')
+  String get tokenType => throw _privateConstructorUsedError;
+  @JsonKey(name: 'expires_in')
+  int? get expiresIn => throw _privateConstructorUsedError;
+
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  @JsonKey(ignore: true)
+  $AuthResponseModelCopyWith<AuthResponseModel> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $AuthResponseModelCopyWith<$Res> {
+  factory $AuthResponseModelCopyWith(
+          AuthResponseModel value, $Res Function(AuthResponseModel) then) =
+      _$AuthResponseModelCopyWithImpl<$Res, AuthResponseModel>;
+  @useResult
+  $Res call(
+      {UserModel user,
+      @JsonKey(name: 'access_token') String accessToken,
+      @JsonKey(name: 'refresh_token') String? refreshToken,
+      @JsonKey(name: 'token_type') String tokenType,
+      @JsonKey(name: 'expires_in') int? expiresIn});
+
+  $UserModelCopyWith<$Res> get user;
+}
+
+/// @nodoc
+class _$AuthResponseModelCopyWithImpl<$Res, $Val extends AuthResponseModel>
+    implements $AuthResponseModelCopyWith<$Res> {
+  _$AuthResponseModelCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? user = null,
+    Object? accessToken = null,
+    Object? refreshToken = freezed,
+    Object? tokenType = null,
+    Object? expiresIn = freezed,
+  }) {
+    return _then(_value.copyWith(
+      user: null == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel,
+      accessToken: null == accessToken
+          ? _value.accessToken
+          : accessToken // ignore: cast_nullable_to_non_nullable
+              as String,
+      refreshToken: freezed == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
+              as String?,
+      tokenType: null == tokenType
+          ? _value.tokenType
+          : tokenType // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiresIn: freezed == expiresIn
+          ? _value.expiresIn
+          : expiresIn // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $UserModelCopyWith<$Res> get user {
+    return $UserModelCopyWith<$Res>(_value.user, (value) {
+      return _then(_value.copyWith(user: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$AuthResponseModelImplCopyWith<$Res>
+    implements $AuthResponseModelCopyWith<$Res> {
+  factory _$$AuthResponseModelImplCopyWith(_$AuthResponseModelImpl value,
+          $Res Function(_$AuthResponseModelImpl) then) =
+      __$$AuthResponseModelImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {UserModel user,
+      @JsonKey(name: 'access_token') String accessToken,
+      @JsonKey(name: 'refresh_token') String? refreshToken,
+      @JsonKey(name: 'token_type') String tokenType,
+      @JsonKey(name: 'expires_in') int? expiresIn});
+
+  @override
+  $UserModelCopyWith<$Res> get user;
+}
+
+/// @nodoc
+class __$$AuthResponseModelImplCopyWithImpl<$Res>
+    extends _$AuthResponseModelCopyWithImpl<$Res, _$AuthResponseModelImpl>
+    implements _$$AuthResponseModelImplCopyWith<$Res> {
+  __$$AuthResponseModelImplCopyWithImpl(_$AuthResponseModelImpl _value,
+      $Res Function(_$AuthResponseModelImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? user = null,
+    Object? accessToken = null,
+    Object? refreshToken = freezed,
+    Object? tokenType = null,
+    Object? expiresIn = freezed,
+  }) {
+    return _then(_$AuthResponseModelImpl(
+      user: null == user
+          ? _value.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserModel,
+      accessToken: null == accessToken
+          ? _value.accessToken
+          : accessToken // ignore: cast_nullable_to_non_nullable
+              as String,
+      refreshToken: freezed == refreshToken
+          ? _value.refreshToken
+          : refreshToken // ignore: cast_nullable_to_non_nullable
+              as String?,
+      tokenType: null == tokenType
+          ? _value.tokenType
+          : tokenType // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiresIn: freezed == expiresIn
+          ? _value.expiresIn
+          : expiresIn // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$AuthResponseModelImpl implements _AuthResponseModel {
+  const _$AuthResponseModelImpl(
+      {required this.user,
+      @JsonKey(name: 'access_token') required this.accessToken,
+      @JsonKey(name: 'refresh_token') this.refreshToken,
+      @JsonKey(name: 'token_type') this.tokenType = 'Bearer',
+      @JsonKey(name: 'expires_in') this.expiresIn});
+
+  factory _$AuthResponseModelImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AuthResponseModelImplFromJson(json);
+
+  @override
+  final UserModel user;
+  @override
+  @JsonKey(name: 'access_token')
+  final String accessToken;
+  @override
+  @JsonKey(name: 'refresh_token')
+  final String? refreshToken;
+  @override
+  @JsonKey(name: 'token_type')
+  final String tokenType;
+  @override
+  @JsonKey(name: 'expires_in')
+  final int? expiresIn;
+
+  @override
+  String toString() {
+    return 'AuthResponseModel(user: $user, accessToken: $accessToken, refreshToken: $refreshToken, tokenType: $tokenType, expiresIn: $expiresIn)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$AuthResponseModelImpl &&
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.accessToken, accessToken) ||
+                other.accessToken == accessToken) &&
+            (identical(other.refreshToken, refreshToken) ||
+                other.refreshToken == refreshToken) &&
+            (identical(other.tokenType, tokenType) ||
+                other.tokenType == tokenType) &&
+            (identical(other.expiresIn, expiresIn) ||
+                other.expiresIn == expiresIn));
+  }
+
+  @JsonKey(ignore: true)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, user, accessToken, refreshToken, tokenType, expiresIn);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$AuthResponseModelImplCopyWith<_$AuthResponseModelImpl> get copyWith =>
+      __$$AuthResponseModelImplCopyWithImpl<_$AuthResponseModelImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AuthResponseModelImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _AuthResponseModel implements AuthResponseModel {
+  const factory _AuthResponseModel(
+          {required final UserModel user,
+          @JsonKey(name: 'access_token') required final String accessToken,
+          @JsonKey(name: 'refresh_token') final String? refreshToken,
+          @JsonKey(name: 'token_type') final String tokenType,
+          @JsonKey(name: 'expires_in') final int? expiresIn}) =
+      _$AuthResponseModelImpl;
+
+  factory _AuthResponseModel.fromJson(Map<String, dynamic> json) =
+      _$AuthResponseModelImpl.fromJson;
+
+  @override
+  UserModel get user;
+  @override
+  @JsonKey(name: 'access_token')
+  String get accessToken;
+  @override
+  @JsonKey(name: 'refresh_token')
+  String? get refreshToken;
+  @override
+  @JsonKey(name: 'token_type')
+  String get tokenType;
+  @override
+  @JsonKey(name: 'expires_in')
+  int? get expiresIn;
+  @override
+  @JsonKey(ignore: true)
+  _$$AuthResponseModelImplCopyWith<_$AuthResponseModelImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

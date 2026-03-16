@@ -1,0 +1,56 @@
+Getting Started: Flutter Clean Architecture Base
+This guide will help you set up, run, and develop features in your new Flutter project.
+
+1. Initial Setup
+Before running the app, you must install dependencies and generate code.
+
+Commands to Run
+Open your terminal in the project folder and run:
+
+Install Dependencies:
+
+flutter pub get
+Generate Code (Crucial Step): This project uses freezed and riverpod_generator, so you must run this command whenever you change models or providers:
+
+dart run build_runner build --delete-conflicting-outputs
+Tip: Run dart run build_runner watch to auto-generate code while you develop.
+
+Run the App:
+
+flutter run
+2. Project Structure
+The project follows Clean Architecture principles, located in lib/:
+
+core/: Shared code (Network, Theme, Constants).
+features/: Your app modules (e.g., auth, example).
+data/: API calls, Models, Repositories Implementation.
+domain/: Entities (Business Objects), Repository Interfaces.
+presentation/: Screens, Widgets, Riverpod Providers.
+routes.dart
+: Navigation configuration.
+3. How to Create a New Feature (e.g., "Courses")
+To add a "University Courses" screen, follow this workflow:
+
+Step 1: Create Folders
+Create lib/features/courses/ with subfolders: data, domain, presentation.
+
+Step 2: Define Domain (The "What")
+Create domain/entities/course.dart (Simple class for UI).
+Create domain/repositories/course_repository.dart (Abstract class defining methods like getCourses()).
+Step 3: Implement Data (The "How")
+Create data/models/course_model.dart (JSON parsing, usually using @freezed).
+Create data/datasources/course_remote_datasource.dart (API calls using 
+ApiClient
+).
+Create data/repositories/course_repository_impl.dart (Implements the domain repository).
+Step 4: Build Presentation (The UI)
+Create presentation/providers/course_provider.dart (State management using Riverpod).
+Create presentation/screens/course_list_screen.dart (The logical UI).
+Step 5: Add Route
+Register your new screen in 
+lib/routes.dart
+.
+
+4. Common Troubleshooting
+"Method not found" / "Class not found": You mostly likely forgot to run the build_runner. Run the command from Step 1.2.
+Version Conflicts: Run flutter pub upgrade.
