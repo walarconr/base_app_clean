@@ -1,238 +1,702 @@
-# Flutter Clean Architecture App
+# Flutter Base — Clean Architecture
 
-## 📱 Descripción
+Base de aplicación Flutter lista para producción. Implementa Clean Architecture, autenticación JWT con Riverpod, navegación con GoRouter, tema claro/oscuro persistente y un feature de ejemplo (Tasks) con CRUD completo.
 
-Aplicación Flutter con arquitectura limpia (Clean Architecture), modular, mantenible y lista para conectar con APIs externas. Implementa las mejores prácticas de desarrollo y patrones de diseño para aplicaciones de producción.
+---
 
-## 🚀 Características
+## Requisitos
 
-- ✅ **Clean Architecture**: Separación clara entre capas (Presentación, Dominio, Datos)
-- ✅ **Autenticación JWT**: Sistema completo de autenticación con tokens
-- ✅ **Manejo de Estado**: Implementado con Riverpod
-- ✅ **Cliente HTTP**: Configurado con Dio e interceptores
-- ✅ **CRUD Funcional**: Ejemplo completo de Tasks (crear, leer, actualizar, eliminar)
-- ✅ **Tema Claro/Oscuro**: Soporte completo para temas
-- ✅ **Validaciones**: Sistema robusto de validaciones reutilizables
-- ✅ **Navegación**: Implementada con GoRouter y redirección automática
-- ✅ **Responsive**: Diseño adaptativo con ScreenUtil
+- Flutter 3.x / Dart ≥ 3.0.0
+- Android Studio o VS Code
+- Dispositivo físico o emulador
 
-## 🏗️ Arquitectura
+---
 
-```
-lib/
-├── core/                       # Núcleo de la aplicación
-│   ├── network/               # Configuración de red
-│   │   ├── api_client.dart   # Cliente HTTP con Dio
-│   │   ├── api_exceptions.dart # Excepciones personalizadas
-│   │   └── endpoints.dart    # Endpoints de la API
-│   ├── errors/
-│   │   └── failures.dart     # Manejo de errores del dominio
-│   ├── theme/
-│   │   ├── app_theme.dart    # Configuración de temas
-│   │   ├── light_theme.dart  # Tema claro
-│   │   └── dark_theme.dart   # Tema oscuro
-│   ├── utils/
-│   │   └── validators.dart   # Validadores reutilizables
-│   └── constants/
-│       └── app_constants.dart # Constantes de la app
-│
-├── features/                   # Features de la aplicación
-│   ├── auth/                  # Autenticación
-│   │   ├── data/
-│   │   │   ├── models/       # Modelos con serialización
-│   │   │   ├── datasources/  # Fuentes de datos
-│   │   │   └── repositories/ # Implementación de repositorios
-│   │   ├── domain/
-│   │   │   ├── entities/     # Entidades del dominio
-│   │   │   ├── repositories/ # Contratos de repositorios
-│   │   │   └── usecases/     # Casos de uso
-│   │   └── presentation/
-│   │       ├── providers/    # Providers de Riverpod
-│   │       └── screens/      # Pantallas de UI
-│   │
-│   └── example/               # Feature de ejemplo (Tasks)
-│       ├── data/
-│       ├── domain/
-│       └── presentation/
-│
-├── main.dart                  # Punto de entrada
-└── routes.dart               # Configuración de rutas
-```
+## Inicio rápido
 
-## 🛠️ Tecnologías Utilizadas
-
-- **Flutter**: Framework de desarrollo multiplataforma
-- **Dart**: Lenguaje de programación
-- **Riverpod**: Manejo de estado reactivo
-- **Dio**: Cliente HTTP potente
-- **GoRouter**: Navegación declarativa
-- **Freezed**: Generación de código para modelos inmutables
-- **Flutter Secure Storage**: Almacenamiento seguro
-- **Pretty Dio Logger**: Logs de peticiones HTTP
-
-## 📦 Instalación
-
-1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/tuusuario/flutter-clean-architecture.git
-cd flutter-clean-architecture
-```
-
-2. **Instalar dependencias**
-```bash
+# 1. Instalar dependencias
 flutter pub get
-```
 
-3. **Generar código**
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
+# 2. Generar código (Freezed + json_serializable)
+dart run build_runner build --delete-conflicting-outputs
 
-4. **Configurar la API**
-Editar el archivo `lib/core/network/endpoints.dart` y actualizar la URL base:
-```dart
-static const String baseUrl = 'https://tu-api.com/v1';
-```
-
-5. **Ejecutar la aplicación**
-```bash
+# 3. Ejecutar en modo desarrollo
 flutter run
 ```
 
-## 🔐 Autenticación
+En modo DEV (`Environment.dev`) el login acepta credenciales mock:
 
-El sistema de autenticación incluye:
+| Usuario | Contraseña |
+|---------|-----------|
+| `demo`  | `demo123`  |
+| `admin` | `admin123` |
+| `test`  | `test123`  |
 
-- **Login**: Autenticación con email y contraseña
-- **Registro**: Creación de nuevas cuentas
-- **Recuperación de contraseña**: Envío de email para resetear contraseña
-- **Tokens JWT**: Manejo automático de tokens y refresh tokens
-- **Persistencia**: Almacenamiento seguro de credenciales
-- **Auto-logout**: Cierre de sesión automático cuando expira el token
+Para conectar a tu API real, edita `lib/core/config/env_config.dart` y cambia la `baseUrl`.
 
-### Flujo de Autenticación
+---
 
-1. Usuario ingresa credenciales
-2. App envía credenciales a la API
-3. API valida y retorna tokens (access + refresh)
-4. App almacena tokens de forma segura
-5. Tokens se incluyen automáticamente en requests
-6. Si el token expira, se intenta refrescar automáticamente
-7. Si el refresh falla, se redirige al login
+## Estructura del proyecto
 
-## 📝 CRUD de Ejemplo (Tasks)
+```
+lib/
+├── core/                         # Código compartido por todos los features
+│   ├── config/
+│   │   └── env_config.dart       # Ambientes (dev / staging / prod)
+│   ├── constants/
+│   │   └── app_constants.dart    # Rutas, claves de storage, timeouts
+│   ├── errors/
+│   │   └── failures.dart         # Jerarquía de Failures (dartz Either)
+│   ├── network/
+│   │   ├── api_client.dart       # Dio + interceptores + token refresh mutex
+│   │   ├── api_exceptions.dart   # Excepciones tipadas de red
+│   │   └── endpoints.dart        # Constantes de endpoints
+│   ├── services/
+│   │   ├── connectivity_service.dart  # isConnectedProvider (StreamProvider)
+│   │   └── snackbar_service.dart      # Snackbars sin BuildContext
+│   ├── state/
+│   │   ├── base_state.dart       # BaseState<T> genérico
+│   │   └── paginated_notifier.dart    # PaginatedNotifier<T> con loadMore/refresh
+│   ├── theme/
+│   │   ├── app_theme.dart        # Colores, spacing, shadows, ThemeModeNotifier
+│   │   ├── light_theme.dart
+│   │   └── dark_theme.dart
+│   ├── usecases/
+│   │   └── use_case.dart         # UseCase<T, Params> + NoParams
+│   ├── utils/
+│   │   ├── app_logger.dart       # AppLogger (dart:developer)
+│   │   └── validators.dart       # Validadores reutilizables en español
+│   └── widgets/
+│       ├── main_shell.dart       # Shell: Drawer + BottomNav + banner offline
+│       └── app_drawer.dart       # Drawer lateral
+│
+├── features/
+│   ├── auth/                     # Autenticación completa (JWT)
+│   │   ├── data/
+│   │   │   ├── datasources/      # AuthRemoteDataSource
+│   │   │   ├── models/           # UserModel (Freezed)
+│   │   │   └── repositories/     # AuthRepositoryImpl
+│   │   ├── domain/
+│   │   │   ├── entities/         # User
+│   │   │   ├── repositories/     # AuthRepository (interfaz)
+│   │   │   └── usecases/         # Login, Register, Logout, ForgotPassword
+│   │   └── presentation/
+│   │       ├── providers/        # authProvider, currentUserProvider
+│   │       ├── login_screen.dart
+│   │       ├── register_screen.dart
+│   │       └── forgot_password_screen.dart
+│   │
+│   ├── profile/
+│   │   └── presentation/
+│   │       ├── profile_screen.dart        # Settings + logout
+│   │       ├── profile_detail_screen.dart # Datos completos
+│   │       ├── edit_profile_screen.dart   # Formulario de edición
+│   │       └── change_password_screen.dart
+│   │
+│   ├── dashboard/                # Pantalla Home
+│   ├── notifications/
+│   └── example/                  # Feature de referencia: Tasks (CRUD completo)
+│       ├── data/
+│       │   └── datasources/      # TaskLocalDataSource (SharedPreferences)
+│       ├── domain/
+│       │   └── entities/         # Task, TaskStatus, TaskPriority
+│       └── presentation/
+│           ├── providers/        # taskProvider (StateNotifier)
+│           ├── task_list_screen.dart
+│           └── task_form_screen.dart
+│
+├── main.dart                     # Entry point, error handlers globales
+└── routes.dart                   # GoRouter, ShellRoute, auth guard
+```
 
-El módulo de Tasks demuestra:
+---
 
-- **Listado**: Con filtros y paginación
-- **Creación**: Formulario con validaciones
-- **Edición**: Actualización de datos existentes
-- **Eliminación**: Con confirmación
-- **Filtros**: Por estado y prioridad
-- **Estados**: Pending, In Progress, Completed, etc.
-- **Prioridades**: Low, Medium, High, Urgent
+## Arquitectura
 
-## 🎨 Temas
+### Capas por feature
 
-La aplicación soporta:
+```
+Pantalla (Widget)
+    │ ref.watch / ref.read
+    ▼
+StateNotifier  ──────────────── maneja estado UI
+    │ await useCase(params)
+    ▼
+UseCase<T, Params>  ─────────── lógica de negocio
+    │ repository.method()
+    ▼
+Repository (interfaz)  ─────── contrato del dominio
+    │ implementado por
+    ▼
+RepositoryImpl  ────────────── orquesta fuentes de datos
+    │
+    ├── RemoteDataSource  ────── ApiClient (Dio → HTTP)
+    └── LocalDataSource   ────── SharedPreferences / SecureStorage
+```
 
-- Tema claro
-- Tema oscuro
-- Cambio dinámico de tema
-- Persistencia de preferencia
-- Colores personalizados por tema
+Cada capa retorna `Either<Failure, T>` (paquete `dartz`):
 
-## 🔄 Manejo de Estado
+```dart
+// Use case
+final result = await _repository.getProducts();
 
-Implementado con Riverpod:
+result.fold(
+  (failure) => state = state.toError(failure.message),
+  (data)    => state = state.toSuccess(data),
+);
+```
 
-- **Providers**: Para inyección de dependencias
-- **StateNotifier**: Para estados complejos
-- **FutureProvider**: Para operaciones asíncronas
-- **StateProvider**: Para estados simples
+### Flujo de autenticación
 
-## 🌐 Cliente HTTP
+```
+Login → AuthRepositoryImpl → JWT guardado en FlutterSecureStorage
+                           → GoRouter redirect evalúa authProvider
+                           → Navega a /home
+Logout → clearTokens() en ApiClient + SecureStorage → redirect a /login
+```
 
-Configuración de Dio incluye:
+El `routerProvider` **nunca** hace `ref.watch(authProvider)` — usa `ref.read` dentro del callback `redirect` para evitar recrear el router en cada cambio de estado.
 
-- **Interceptores**: Para logs, auth, y errores
-- **Timeout**: Configuración de timeouts
-- **Headers**: Headers globales y dinámicos
-- **Retry Logic**: Reintentos en caso de fallo
-- **Error Handling**: Manejo centralizado de errores
+---
 
-## ✅ Validaciones
+## Cómo crear un nuevo feature
 
-Validadores incluidos:
+### Paso 1 — Registrar la ruta
 
-- Email
-- Password (con requisitos de seguridad)
-- Nombre
-- Teléfono
-- URLs
-- Números
-- Rangos
-- Fechas
-- Tarjetas de crédito
-- Y más...
+En `lib/core/constants/app_constants.dart`:
 
-## 🚦 Testing
+```dart
+static const String productListRoute = '/products';
+static const String productDetailRoute = '/products/:id';
+```
+
+En `lib/routes.dart`:
+
+```dart
+import 'features/products/presentation/product_list_screen.dart';
+
+// Dentro de ShellRoute.routes si va en el shell (con nav bar):
+GoRoute(
+  path: AppConstants.productListRoute,
+  name: 'productList',
+  pageBuilder: (context, state) => const NoTransitionPage(
+    child: ProductListScreen(),
+  ),
+),
+
+// Fuera del ShellRoute si es una pantalla de detalle:
+GoRoute(
+  path: AppConstants.productDetailRoute,
+  name: 'productDetail',
+  builder: (context, state) {
+    final id = state.pathParameters['id']!;
+    return ProductDetailScreen(productId: id);
+  },
+),
+```
+
+Si quieres que aparezca en el `BottomNavigationBar`, agrega el tab en `MainShell._tabs`:
+
+```dart
+_TabConfig(
+  route: AppConstants.productListRoute,
+  icon: Icons.inventory_2_outlined,
+  activeIcon: Icons.inventory_2_rounded,
+  label: 'Productos',
+),
+```
+
+---
+
+### Paso 2 — Capa Domain
+
+**Entidad** `lib/features/products/domain/entities/product.dart`:
+
+```dart
+import 'package:equatable/equatable.dart';
+
+class Product extends Equatable {
+  final String id;
+  final String name;
+  final double price;
+  final String? imageUrl;
+
+  const Product({
+    required this.id,
+    required this.name,
+    required this.price,
+    this.imageUrl,
+  });
+
+  Product copyWith({String? name, double? price}) {
+    return Product(
+      id: id,
+      name: name ?? this.name,
+      price: price ?? this.price,
+      imageUrl: imageUrl,
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, name, price];
+}
+```
+
+**Interfaz del repositorio** `lib/features/products/domain/repositories/product_repository.dart`:
+
+```dart
+import 'package:dartz/dartz.dart';
+import '../../../../core/errors/failures.dart';
+import '../entities/product.dart';
+
+abstract class ProductRepository {
+  Future<Either<Failure, List<Product>>> getProducts({int page = 1});
+  Future<Either<Failure, Product>> getProductById(String id);
+  Future<Either<Failure, Product>> createProduct(Product product);
+  Future<Either<Failure, void>> deleteProduct(String id);
+}
+```
+
+**Use case** `lib/features/products/domain/usecases/get_products_use_case.dart`:
+
+```dart
+import 'package:dartz/dartz.dart';
+import '../../../../core/errors/failures.dart';
+import '../../../../core/usecases/use_case.dart';
+import '../entities/product.dart';
+import '../repositories/product_repository.dart';
+
+class GetProductsUseCase extends UseCase<List<Product>, NoParams> {
+  final ProductRepository repository;
+  GetProductsUseCase({required this.repository});
+
+  @override
+  Future<Either<Failure, List<Product>>> call(NoParams params) {
+    return repository.getProducts();
+  }
+}
+```
+
+---
+
+### Paso 3 — Capa Data
+
+**Data source** `lib/features/products/data/datasources/product_remote_data_source.dart`:
+
+```dart
+import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_exceptions.dart';
+import '../models/product_model.dart';
+
+abstract class ProductRemoteDataSource {
+  Future<List<ProductModel>> getProducts({int page = 1});
+}
+
+class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
+  final ApiClient _apiClient;
+  ProductRemoteDataSourceImpl({required ApiClient apiClient})
+      : _apiClient = apiClient;
+
+  @override
+  Future<List<ProductModel>> getProducts({int page = 1}) async {
+    final response = await _apiClient.get(
+      '/products',
+      queryParameters: {'page': page, 'limit': 20},
+    );
+    final List<dynamic> data = response.data['data'] as List;
+    return data.map((e) => ProductModel.fromJson(e)).toList();
+  }
+}
+```
+
+**Implementación del repositorio** `lib/features/products/data/repositories/product_repository_impl.dart`:
+
+```dart
+import 'package:dartz/dartz.dart';
+import '../../../../core/errors/failures.dart';
+import '../../../../core/network/api_exceptions.dart';
+import '../../domain/entities/product.dart';
+import '../../domain/repositories/product_repository.dart';
+import '../datasources/product_remote_data_source.dart';
+
+class ProductRepositoryImpl implements ProductRepository {
+  final ProductRemoteDataSource _remoteDataSource;
+
+  ProductRepositoryImpl({required ProductRemoteDataSource remoteDataSource})
+      : _remoteDataSource = remoteDataSource;
+
+  @override
+  Future<Either<Failure, List<Product>>> getProducts({int page = 1}) async {
+    try {
+      final models = await _remoteDataSource.getProducts(page: page);
+      return Right(models.map((m) => m.toEntity()).toList());
+    } on ApiException catch (e) {
+      return Left(ServerFailure(message: e.message, code: e.statusCode));
+    } catch (e) {
+      return Left(UnknownFailure(message: e.toString()));
+    }
+  }
+  // ...
+}
+```
+
+---
+
+### Paso 4 — Capa Presentation
+
+**Provider y StateNotifier** `lib/features/products/presentation/providers/product_provider.dart`:
+
+```dart
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../../core/network/api_client.dart';
+import '../../../../core/state/base_state.dart';
+import '../../data/datasources/product_remote_data_source.dart';
+import '../../data/repositories/product_repository_impl.dart';
+import '../../domain/entities/product.dart';
+import '../../domain/usecases/get_products_use_case.dart';
+import '../../../../core/usecases/use_case.dart';
+
+// ─── DI ───
+final productRemoteDataSourceProvider = Provider((ref) =>
+    ProductRemoteDataSourceImpl(apiClient: ref.watch(apiClientProvider)));
+
+final productRepositoryProvider = Provider((ref) =>
+    ProductRepositoryImpl(remoteDataSource: ref.watch(productRemoteDataSourceProvider)));
+
+final getProductsUseCaseProvider = Provider((ref) =>
+    GetProductsUseCase(repository: ref.watch(productRepositoryProvider)));
+
+// ─── Estado ───
+class ProductState extends BaseState<List<Product>> {
+  const ProductState({super.data, super.status, super.error});
+}
+
+// ─── Notifier ───
+class ProductNotifier extends StateNotifier<BaseState<List<Product>>> {
+  final GetProductsUseCase _getProducts;
+
+  ProductNotifier({required GetProductsUseCase getProducts})
+      : _getProducts = getProducts,
+        super(const BaseState()) {
+    load();
+  }
+
+  Future<void> load() async {
+    state = state.toLoading();
+    final result = await _getProducts(const NoParams());
+    result.fold(
+      (failure) => state = state.toError(failure.message),
+      (products) => state = state.toSuccess(products),
+    );
+  }
+
+  Future<void> refresh() => load();
+}
+
+// ─── Provider ───
+final productProvider =
+    StateNotifierProvider<ProductNotifier, BaseState<List<Product>>>((ref) {
+  return ProductNotifier(
+    getProducts: ref.watch(getProductsUseCaseProvider),
+  );
+});
+```
+
+---
+
+### Paso 5 — Pantalla
+
+**Lista** `lib/features/products/presentation/product_list_screen.dart`:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/constants/app_constants.dart';
+import '../../../core/services/snackbar_service.dart';
+import 'providers/product_provider.dart';
+
+class ProductListScreen extends ConsumerWidget {
+  const ProductListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(productProvider);
+
+    // Mostrar error via snackbar (sin BuildContext en el notifier)
+    ref.listen(productProvider, (_, next) {
+      if (next.hasError) SnackbarService.showError(next.error!);
+    });
+
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.hasError && !state.hasData) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(state.error!),
+            FilledButton(
+              onPressed: () => ref.read(productProvider.notifier).refresh(),
+              child: const Text('Reintentar'),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final products = state.data ?? [];
+
+    return RefreshIndicator(
+      onRefresh: () => ref.read(productProvider.notifier).refresh(),
+      child: ListView.builder(
+        itemCount: products.length,
+        itemBuilder: (context, index) {
+          final product = products[index];
+          return ListTile(
+            title: Text(product.name),
+            subtitle: Text('\$${product.price}'),
+            onTap: () => context.push(
+              AppConstants.productDetailRoute.replaceFirst(':id', product.id),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+```
+
+---
+
+## Cómo crear una pantalla con formulario
+
+Sigue el patrón de `EditProfileScreen` o `ChangePasswordScreen`:
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/services/snackbar_service.dart';
+import '../../../core/utils/validators.dart';
+
+class MyFormScreen extends ConsumerStatefulWidget {
+  const MyFormScreen({super.key});
+
+  @override
+  ConsumerState<MyFormScreen> createState() => _MyFormScreenState();
+}
+
+class _MyFormScreenState extends ConsumerState<MyFormScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _titleController = TextEditingController();
+  bool _isSaving = false;
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSave() async {
+    if (!_formKey.currentState!.validate()) return;
+    FocusScope.of(context).unfocus();
+
+    setState(() => _isSaving = true);
+
+    // await ref.read(myProvider.notifier).save(...);
+    await Future.delayed(const Duration(seconds: 1)); // reemplazar
+
+    if (!mounted) return;
+    setState(() => _isSaving = false);
+
+    SnackbarService.showSuccess('Guardado correctamente');
+    context.pop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Mi formulario'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: FilledButton(
+              onPressed: _isSaving ? null : _handleSave,
+              child: const Text('Guardar'),
+            ),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(labelText: 'Título'),
+                validator: (v) => Validators.validateRequired(v, fieldName: 'El título'),
+                enabled: !_isSaving,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+---
+
+## Servicios del core
+
+### SnackbarService
+
+Muestra notificaciones desde cualquier capa, sin `BuildContext`:
+
+```dart
+SnackbarService.showSuccess('Operación exitosa');
+SnackbarService.showError('Algo salió mal');
+SnackbarService.showWarning('Revisa los datos');
+SnackbarService.showInfo('Token actualizado');
+```
+
+Funciona porque `scaffoldMessengerKey` está registrado en `MaterialApp.router` en `main.dart`.
+
+### AppLogger
+
+```dart
+AppLogger.debug('mensaje debug', tag: 'MI_FEATURE');
+AppLogger.warning('advertencia');
+AppLogger.error('error', error: e, stackTrace: st);
+```
+
+Solo registra cuando `enableLogging` es `true` (activo en dev/staging).
+
+### Validators
+
+```dart
+TextFormField(
+  validator: Validators.validateEmail,           // Requerido + formato
+  validator: Validators.validatePassword,        // 8 chars, upper, lower, digit, especial
+  validator: (v) => Validators.validateName(v, fieldName: 'El apellido'),
+  validator: Validators.validatePhoneOptional,   // Acepta vacío
+);
+```
+
+---
+
+## Manejo de estado
+
+### BaseState\<T\> — para datos simples
+
+```dart
+// En el notifier:
+state = state.toLoading();
+state = state.toSuccess(data);
+state = state.toError('Error al cargar');
+
+// En la pantalla:
+if (state.isLoading) return const CircularProgressIndicator();
+if (state.hasError)  return Text(state.error!);
+final data = state.data!;
+```
+
+### PaginatedNotifier\<T\> — para listas con paginación
+
+```dart
+class ProductListNotifier extends PaginatedNotifier<Product> {
+  final ProductRepository _repo;
+  ProductListNotifier(this._repo);
+
+  @override
+  Future<PaginatedResponse<Product>> fetchPage(int page) {
+    return _repo.getProductsPage(page);
+  }
+}
+
+// En la pantalla, cargar más al llegar al final:
+NotificationListener<ScrollEndNotification>(
+  onNotification: (n) {
+    if (n.metrics.extentAfter < 100) {
+      ref.read(productListProvider.notifier).loadMore();
+    }
+    return false;
+  },
+  child: ListView.builder(...),
+)
+```
+
+---
+
+## Ambientes
+
+Cambiar en `lib/main.dart`:
+
+```dart
+EnvConfig.initialize(Environment.dev);      // mock login, logs, banner naranja
+EnvConfig.initialize(Environment.staging);  // API staging, sin mock
+EnvConfig.initialize(Environment.prod);     // API producción, sin logs, sin errores expuestos
+```
+
+URLs base en `lib/core/config/env_config.dart`:
+
+```dart
+case Environment.dev:
+  return EnvConfig._('https://api-dev.tuapp.com/v1', ...);
+case Environment.staging:
+  return EnvConfig._('https://api-staging.tuapp.com/v1', ...);
+case Environment.prod:
+  return EnvConfig._('https://api.tuapp.com/v1', ...);
+```
+
+---
+
+## Comandos
 
 ```bash
-# Ejecutar tests
+# Desarrollo
+flutter run
+flutter run -d <device_id>
+
+# Análisis
+flutter analyze
+
+# Tests
 flutter test
+flutter test test/features/auth/
 
-# Con coverage
-flutter test --coverage
+# Generación de código (Freezed / json_serializable)
+dart run build_runner build --delete-conflicting-outputs
+dart run build_runner watch --delete-conflicting-outputs   # modo watch
 
-# Generar reporte HTML
-genhtml coverage/lcov.info -o coverage/html
-```
-
-## 📱 Pantallas
-
-1. **Login**: Autenticación de usuarios
-2. **Registro**: Creación de cuentas
-3. **Recuperar Contraseña**: Reset de password
-4. **Lista de Tareas**: Dashboard principal
-5. **Formulario de Tarea**: Crear/Editar tareas
-6. **Perfil**: Información del usuario
-
-## 🔧 Configuración Adicional
-
-### Variables de Entorno
-
-Crear archivo `.env`:
-```
-API_BASE_URL=https://api.example.com
-API_TIMEOUT=30000
-```
-
-### Build para Producción
-
-```bash
-# Android
+# Builds de distribución
 flutter build apk --release
 flutter build appbundle --release
-
-# iOS
 flutter build ipa --release
 ```
 
-## 📄 Licencia
+---
 
-Este proyecto está bajo la Licencia MIT.
+## Dependencias principales
 
-## 👥 Contribuir
-
-1. Fork el proyecto
-2. Crear una rama (`git checkout -b feature/AmazingFeature`)
-3. Commit cambios (`git commit -m 'Add AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abrir Pull Request
-
-## 📞 Contacto
-
-Tu Nombre - [@tutwitter](https://twitter.com/tutwitter) - email@example.com
-
-Link del Proyecto: [https://github.com/tuusuario/flutter-clean-architecture](https://github.com/tuusuario/flutter-clean-architecture)
+| Paquete | Uso |
+|---------|-----|
+| `flutter_riverpod` | Estado reactivo (StateNotifier, Provider) |
+| `go_router` | Navegación declarativa, ShellRoute, auth guard |
+| `dio` | Cliente HTTP con interceptores |
+| `dartz` | `Either<Failure, T>` para manejo funcional de errores |
+| `flutter_secure_storage` | JWT tokens cifrados |
+| `shared_preferences` | Preferencias ligeras (tema) |
+| `freezed` + `json_serializable` | Modelos inmutables con serialización |
+| `equatable` | Comparación por valor en entidades |
+| `flutter_screenutil` | Diseño adaptativo (base 375×812) |
+| `pretty_dio_logger` | Logs de requests HTTP (solo dev) |
+| `connectivity_plus` | Estado de conexión en tiempo real |
