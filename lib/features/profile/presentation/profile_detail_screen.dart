@@ -48,31 +48,14 @@ class ProfileDetailScreen extends ConsumerWidget {
                 ],
               ),
               child: Center(
-                child: user?.avatar != null
-                    ? ClipOval(
-                        child: Image.network(
-                          user!.avatar!,
-                          width: 96,
-                          height: 96,
-                          fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) => Text(
-                            user.initials,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      )
-                    : Text(
-                        user?.initials ?? 'U',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 36,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
+                child: Text(
+                  user?.initials ?? 'U',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 36,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 32),
@@ -96,30 +79,30 @@ class ProfileDetailScreen extends ConsumerWidget {
                 _InfoRow(
                   icon: Icons.badge_outlined,
                   label: 'Rol',
-                  value: (user?.role.value ?? 'user').toUpperCase(),
+                  value: (user?.perfiles.firstOrNull?.perfil ?? 'user').toUpperCase(),
                   theme: theme,
                   valueColor: const Color(0xFF2E7D32),
                 ),
                 _InfoRow(
                   icon: Icons.phone_outlined,
                   label: 'Teléfono',
-                  value: (user?.phone?.isNotEmpty == true)
-                      ? user!.phone!
+                  value: (user?.persona?.celular?.isNotEmpty ?? false)
+                      ? user!.persona!.celular!
                       : 'No registrado',
                   theme: theme,
                 ),
                 _InfoRow(
                   icon: Icons.cake_outlined,
-                  label: 'Fecha de nacimiento',
-                  value: user?.birthDate != null
-                      ? '${user!.birthDate!.day.toString().padLeft(2, '0')}/${user.birthDate!.month.toString().padLeft(2, '0')}/${user.birthDate!.year}'
+                  label: 'Fecha de nacimiento / Ingreso',
+                  value: user?.dateJoined != null
+                      ? '${user!.dateJoined!.day.toString().padLeft(2, '0')}/${user!.dateJoined!.month.toString().padLeft(2, '0')}/${user!.dateJoined!.year}'
                       : 'No registrada',
                   theme: theme,
                 ),
                 _InfoRow(
                   icon: Icons.fingerprint_rounded,
                   label: 'ID de usuario',
-                  value: user?.id ?? 'No disponible',
+                  value: user?.id.toString() ?? 'No disponible',
                   theme: theme,
                   showDivider: false,
                 ),
@@ -141,8 +124,8 @@ class ProfileDetailScreen extends ConsumerWidget {
                 _InfoRow(
                   icon: Icons.calendar_today_outlined,
                   label: 'Miembro desde',
-                  value: user != null
-                      ? '${user.createdAt.day}/${user.createdAt.month}/${user.createdAt.year}'
+                  value: user?.dateJoined != null
+                      ? '${user!.dateJoined!.day}/${user!.dateJoined!.month}/${user!.dateJoined!.year}'
                       : 'No disponible',
                   theme: theme,
                   showDivider: false,

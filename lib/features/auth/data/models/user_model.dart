@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../domain/entities/user.dart';
+import 'persona_model.dart';
+import 'perfil_model.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -10,18 +12,15 @@ class UserModel with _$UserModel {
   const UserModel._();
   
   const factory UserModel({
-    required String id,
+    required int id,
     required String email,
-    required String name,
-    String? avatar,
-    String? phone,
-    @JsonKey(name: 'birth_date') DateTime? birthDate,
-    @Default('user') String role,
-    @JsonKey(name: 'is_email_verified') @Default(false) bool isEmailVerified,
-    @JsonKey(name: 'is_active') @Default(true) bool isActive,
-    @JsonKey(name: 'created_at') required DateTime createdAt,
-    @JsonKey(name: 'updated_at') required DateTime updatedAt,
-    Map<String, dynamic>? metadata,
+    required String username,
+    @JsonKey(name: 'first_name') @Default('') String firstName,
+    @JsonKey(name: 'last_name') @Default('') String lastName,
+    @JsonKey(name: 'is_verified') @Default(false) bool isVerified,
+    @JsonKey(name: 'date_joined') required DateTime dateJoined,
+    PersonaModel? persona,
+    @Default([]) List<PerfilModel> perfiles,
   }) = _UserModel;
   
   /// Create UserModel from JSON
@@ -33,16 +32,13 @@ class UserModel with _$UserModel {
     return User(
       id: id,
       email: email,
-      name: name,
-      avatar: avatar,
-      phone: phone,
-      birthDate: birthDate,
-      role: UserRole.fromString(role),
-      isEmailVerified: isEmailVerified,
-      isActive: isActive,
-      createdAt: createdAt,
-      updatedAt: updatedAt,
-      metadata: metadata,
+      username: username,
+      firstName: firstName,
+      lastName: lastName,
+      isVerified: isVerified,
+      dateJoined: dateJoined,
+      persona: persona?.toEntity(),
+      perfiles: perfiles.map((p) => p.toEntity()).toList(),
     );
   }
   
@@ -51,16 +47,13 @@ class UserModel with _$UserModel {
     return UserModel(
       id: user.id,
       email: user.email,
-      name: user.name,
-      avatar: user.avatar,
-      phone: user.phone,
-      birthDate: user.birthDate,
-      role: user.role.value,
-      isEmailVerified: user.isEmailVerified,
-      isActive: user.isActive,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-      metadata: user.metadata,
+      username: user.username,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      isVerified: user.isVerified,
+      dateJoined: user.dateJoined,
+      persona: user.persona != null ? PersonaModel.fromEntity(user.persona!) : null,
+      perfiles: user.perfiles.map((p) => PerfilModel.fromEntity(p)).toList(),
     );
   }
 }

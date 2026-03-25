@@ -32,13 +32,13 @@ class AuthRepositoryImpl implements AuthRepository {
   
   @override
   Future<Either<Failure, User>> login({
-    required String username,
+    required String email,
     required String password,
   }) async {
     _isMockMode = false;
     try {
       final authResponse = await _remoteDataSource.login(
-        username: username,
+        email: email,
         password: password,
       );
       
@@ -49,36 +49,37 @@ class AuthRepositoryImpl implements AuthRepository {
     } on ApiException catch (e) {
       if (!EnvConfig.instance.isDev) return Left(_mapApiExceptionToFailure(e));
       AppLogger.warning('API login failed: ${e.message}. Trying mock authentication...', tag: 'AUTH');
-      return _tryMockLogin(username, password);
+      return _tryMockLogin(email, password);
     } catch (e) {
       if (!EnvConfig.instance.isDev) return Left(UnknownFailure(message: e.toString()));
       AppLogger.warning('Login error: $e. Trying mock authentication...', tag: 'AUTH');
-      return _tryMockLogin(username, password);
+      return _tryMockLogin(email, password);
     }
   }
   
   /// Try to authenticate with mock credentials
-  Future<Either<Failure, User>> _tryMockLogin(String username, String password) async {
+  Future<Either<Failure, User>> _tryMockLogin(String email, String password) async {
     final mockCredentials = {
-      'demo': 'demo123',
-      'test': 'test123',
-      'admin': 'admin123',
+      'demo@demo.local': 'demo123',
+      'test@test.local': 'test123',
+      'admin@admin.local': 'admin123',
     };
     
-    if (mockCredentials[username] != password) {
+    if (mockCredentials[email] != password) {
       return const Left(AuthenticationFailure(message: 'Credenciales inválidas'));
     }
     
+    final username = email.split('@').first;
     final now = DateTime.now();
     final mockUserModel = UserModel(
-      id: 'mock-$username',
-      email: '$username@demo.local',
-      name: username[0].toUpperCase() + username.substring(1),
-      role: username == 'admin' ? 'admin' : 'user',
-      isEmailVerified: true,
-      isActive: true,
-      createdAt: now,
-      updatedAt: now,
+      id: 1,
+      email: email,
+      username: username,
+      firstName: username[0].toUpperCase() + username.substring(1),
+      lastName: 'Demo',
+      isVerified: true,
+      dateJoined: now,
+      perfiles: [],
     );
     
     // Store mock token so router guard works
@@ -87,28 +88,6 @@ class AuthRepositoryImpl implements AuthRepository {
     _isMockMode = true;
     
     return Right(mockUserModel.toEntity());
-  }
-  
-  @override
-  Future<Either<Failure, User>> register({
-    required String email,
-    required String password,
-    required String name,
-  }) async {
-    try {
-      final authResponse = await _remoteDataSource.register(
-        email: email,
-        password: password,
-        name: name,
-      );
-      
-      await _cacheUser(authResponse.user);
-      return Right(authResponse.user.toEntity());
-    } on ApiException catch (e) {
-      return Left(_mapApiExceptionToFailure(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
   }
   
   @override
@@ -130,108 +109,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
   
   @override
-  Future<Either<Failure, void>> forgotPassword({
-    required String email,
-  }) async {
+  Future<Either<Failure, User>> getMe() async {
     try {
-      await _remoteDataSource.forgotPassword(email: email);
-      return const Right(null);
-    } on ApiException catch (e) {
-      return Left(_mapApiExceptionToFailure(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, void>> resetPassword({
-    required String token,
-    required String newPassword,
-  }) async {
-    try {
-      await _remoteDataSource.resetPassword(
-        token: token,
-        newPassword: newPassword,
-      );
-      return const Right(null);
-    } on ApiException catch (e) {
-      return Left(_mapApiExceptionToFailure(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, User>> getProfile() async {
-    try {
-      final userModel = await _remoteDataSource.getProfile();
+      final userModel = await _remoteDataSource.getMe();
       await _cacheUser(userModel);
       return Right(userModel.toEntity());
-    } on ApiException catch (e) {
-      return Left(_mapApiExceptionToFailure(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, User>> updateProfile({
-    String? name,
-    String? phone,
-    DateTime? birthDate,
-  }) async {
-    try {
-      final userModel = await _remoteDataSource.updateProfile(
-        name: name,
-        phone: phone,
-        birthDate: birthDate,
-      );
-      await _cacheUser(userModel);
-      return Right(userModel.toEntity());
-    } on ApiException catch (e) {
-      return Left(_mapApiExceptionToFailure(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, void>> changePassword({
-    required String currentPassword,
-    required String newPassword,
-  }) async {
-    try {
-      await _remoteDataSource.changePassword(
-        currentPassword: currentPassword,
-        newPassword: newPassword,
-      );
-      return const Right(null);
-    } on ApiException catch (e) {
-      return Left(_mapApiExceptionToFailure(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, void>> verifyEmail({
-    required String token,
-  }) async {
-    try {
-      await _remoteDataSource.verifyEmail(token: token);
-      return const Right(null);
-    } on ApiException catch (e) {
-      return Left(_mapApiExceptionToFailure(e));
-    } catch (e) {
-      return Left(UnknownFailure(message: e.toString()));
-    }
-  }
-  
-  @override
-  Future<Either<Failure, void>> resendVerificationEmail() async {
-    try {
-      await _remoteDataSource.resendVerificationEmail();
-      return const Right(null);
     } on ApiException catch (e) {
       return Left(_mapApiExceptionToFailure(e));
     } catch (e) {

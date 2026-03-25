@@ -19,23 +19,24 @@ void main() {
   });
 
   final tUser = User(
-    id: '1',
+    id: 1,
+    username: 'test_demo',
     email: 'test@test.com',
-    name: 'Test User',
-    role: UserRole.user,
-    isEmailVerified: true,
-    isActive: true,
-    createdAt: DateTime(2026, 1, 1),
-    updatedAt: DateTime(2026, 1, 1),
+    firstName: 'Test',
+    lastName: 'User',
+    isVerified: true,
+    perfiles: [],
+    dateJoined: DateTime(2026, 1, 1),
+    persona: null,
   );
 
-  const tParams = LoginParams(username: 'demo', password: 'demo123');
+  const tParams = LoginParams(email: 'demo', password: 'demo123');
 
   group('LoginUseCase', () {
     test('should return User on successful login', () async {
       // arrange
       when(() => mockAuthRepository.login(
-            username: any(named: 'username'),
+            email: any(named: 'email'),
             password: any(named: 'password'),
           )).thenAnswer((_) async => Right(tUser));
 
@@ -43,9 +44,9 @@ void main() {
       final result = await loginUseCase(tParams);
 
       // assert
-      expect(result, Right(tUser));
+      expect(result, Right<Failure, User>(tUser));
       verify(() => mockAuthRepository.login(
-            username: 'demo',
+            email: 'demo',
             password: 'demo123',
           )).called(1);
       verifyNoMoreInteractions(mockAuthRepository);
@@ -55,15 +56,15 @@ void main() {
       // arrange
       const failure = AuthenticationFailure(message: 'Invalid credentials');
       when(() => mockAuthRepository.login(
-            username: any(named: 'username'),
+            email: any(named: 'email'),
             password: any(named: 'password'),
-          )).thenAnswer((_) async => const Left(failure));
+          )).thenAnswer((_) async => const Left<Failure, User>(failure));
 
       // act
       final result = await loginUseCase(tParams);
 
       // assert
-      expect(result, const Left(failure));
+      expect(result, const Left<Failure, User>(failure));
     });
   });
 }

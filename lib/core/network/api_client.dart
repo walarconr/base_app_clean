@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'api_exceptions.dart';
 import 'endpoints.dart';
+import '../config/env_config.dart';
 import '../constants/app_constants.dart';
 
 /// Provider for FlutterSecureStorage
@@ -70,7 +71,16 @@ class ApiClient {
     // Remove any existing interceptors
     _dio.interceptors.clear();
     
-    // Add logging interceptor (only in debug mode)
+    // Add auth interceptor first so headers get injected before logging
+    _dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: _onRequest,
+        onResponse: _onResponse,
+        onError: _onError,
+      ),
+    );
+
+    // Add logging interceptor (only in debug mode) after auth interceptor
     assert(() {
       _dio.interceptors.add(
         PrettyDioLogger(
@@ -85,15 +95,6 @@ class ApiClient {
       );
       return true;
     }());
-    
-    // Add auth interceptor
-    _dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: _onRequest,
-        onResponse: _onResponse,
-        onError: _onError,
-      ),
-    );
   }
   
   /// Request interceptor - Add auth token
@@ -108,6 +109,9 @@ class ApiClient {
     if (_authToken != null && _authToken!.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $_authToken';
     }
+
+    // Add X-API-Key for Omnicore API
+    options.headers['X-API-Key'] = EnvConfig.instance.apiKey;
 
     // Add custom headers
     options.headers['X-Request-ID'] = DateTime.now().millisecondsSinceEpoch.toString();
@@ -175,11 +179,11 @@ class ApiClient {
     try {
       final response = await _dio.post(
         Endpoints.refreshToken,
-        data: {'refresh_token': _refreshToken},
+        data: {'refresh': _refreshToken},
       );
 
-      final newToken = response.data['access_token'];
-      final newRefreshToken = response.data['refresh_token'];
+      final String newToken = response.data['access'];
+      final String newRefreshToken = response.data['refresh'];
 
       await updateTokens(token: newToken, refreshToken: newRefreshToken);
       _refreshLock!.complete();
@@ -215,6 +219,9 @@ class ApiClient {
   
   /// Get current auth token
   String? get authToken => _authToken;
+
+  /// Get current refresh token
+  String? get refreshToken => _refreshToken;
   
   /// Check if user is authenticated
   bool get isAuthenticated => _authToken != null && _authToken!.isNotEmpty;

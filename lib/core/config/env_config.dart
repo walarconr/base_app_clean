@@ -17,12 +17,14 @@ class EnvConfig {
   final String baseUrl;
   final String appName;
   final bool enableLogging;
+  final String apiKey;
 
   const EnvConfig._({
     required this.environment,
     required this.baseUrl,
     required this.appName,
     required this.enableLogging,
+    required this.apiKey,
   });
 
   static late final EnvConfig _instance;
@@ -37,23 +39,26 @@ class EnvConfig {
       case Environment.dev:
         _instance = const EnvConfig._(
           environment: Environment.dev,
-          baseUrl: 'http://localhost:3000/api',
-          appName: 'App [DEV]',
+          baseUrl: 'http://10.0.2.2:8007/api',
+          appName: 'Omnicore [DEV]',
           enableLogging: true,
+          apiKey: 'pk_b4ec0777b88b1312f2bffb4cbc3b2c4a93dbaf93073fc8dd',
         );
       case Environment.staging:
         _instance = const EnvConfig._(
           environment: Environment.staging,
-          baseUrl: 'https://api-staging.example.com/api',
-          appName: 'App [STG]',
+          baseUrl: 'https://tu-dominio.com/api',
+          appName: 'Omnicore [STG]',
           enableLogging: true,
+          apiKey: 'pk_tu_llave_publica',
         );
       case Environment.prod:
         _instance = const EnvConfig._(
           environment: Environment.prod,
-          baseUrl: 'https://api.example.com/api',
-          appName: 'App',
+          baseUrl: 'https://tu-dominio.com/api',
+          appName: 'Omnicore',
           enableLogging: false,
+          apiKey: 'pk_tu_llave_publica',
         );
     }
 

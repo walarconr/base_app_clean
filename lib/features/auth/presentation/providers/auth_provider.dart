@@ -1,14 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../../../../core/network/api_client.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/entities/user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../../domain/usecases/login_use_case.dart';
-import '../../domain/usecases/register_use_case.dart';
 import '../../domain/usecases/logout_use_case.dart';
-import '../../domain/usecases/forgot_password_use_case.dart';
+import '../../domain/usecases/get_me_use_case.dart';
 
 // Data source provider
 final authRemoteDataSourceProvider = Provider<AuthRemoteDataSource>((ref) {
@@ -35,19 +33,14 @@ final loginUseCaseProvider = Provider<LoginUseCase>((ref) {
   return LoginUseCase(repository: repository);
 });
 
-final registerUseCaseProvider = Provider<RegisterUseCase>((ref) {
-  final repository = ref.watch(authRepositoryProvider);
-  return RegisterUseCase(repository: repository);
-});
-
 final logoutUseCaseProvider = Provider<LogoutUseCase>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   return LogoutUseCase(repository: repository);
 });
 
-final forgotPasswordUseCaseProvider = Provider<ForgotPasswordUseCase>((ref) {
+final getMeUseCaseProvider = Provider<GetMeUseCase>((ref) {
   final repository = ref.watch(authRepositoryProvider);
-  return ForgotPasswordUseCase(repository: repository);
+  return GetMeUseCase(repository: repository);
 });
 
 // Auth state
@@ -94,21 +87,18 @@ class AuthState {
 // Auth notifier
 class AuthNotifier extends StateNotifier<AuthState> {
   final LoginUseCase _loginUseCase;
-  final RegisterUseCase _registerUseCase;
   final LogoutUseCase _logoutUseCase;
-  final ForgotPasswordUseCase _forgotPasswordUseCase;
+  final GetMeUseCase _getMeUseCase;
   final AuthRepository _authRepository;
   
   AuthNotifier({
     required LoginUseCase loginUseCase,
-    required RegisterUseCase registerUseCase,
     required LogoutUseCase logoutUseCase,
-    required ForgotPasswordUseCase forgotPasswordUseCase,
+    required GetMeUseCase getMeUseCase,
     required AuthRepository authRepository,
   })  : _loginUseCase = loginUseCase,
-        _registerUseCase = registerUseCase,
         _logoutUseCase = logoutUseCase,
-        _forgotPasswordUseCase = forgotPasswordUseCase,
+        _getMeUseCase = getMeUseCase,
         _authRepository = authRepository,
         super(const AuthState()) {
     _checkAuthStatus();
@@ -147,7 +137,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   
   /// Refresh user profile in background
   Future<void> _refreshProfile() async {
-    final result = await _authRepository.getProfile();
+    final result = await _getMeUseCase();
     
     result.fold(
       (failure) {
@@ -161,15 +151,15 @@ class AuthNotifier extends StateNotifier<AuthState> {
     );
   }
   
-  /// Login with username and password
+  /// Login with email and password
   Future<void> login({
-    required String username,
+    required String email,
     required String password,
   }) async {
     state = state.copyWith(status: AuthStatus.loading, errorMessage: null);
     
     final result = await _loginUseCase(
-      LoginParams(username: username, password: password),
+      LoginParams(email: email, password: password),
     );
     
     result.fold(
@@ -184,34 +174,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
           status: AuthStatus.authenticated,
           user: user,
           isMockMode: _authRepository.isMockMode,
-        );
-      },
-    );
-  }
-  
-  /// Register
-  Future<void> register({
-    required String email,
-    required String password,
-    required String name,
-  }) async {
-    state = state.copyWith(status: AuthStatus.loading, errorMessage: null);
-    
-    final result = await _registerUseCase(
-      RegisterParams(email: email, password: password, name: name),
-    );
-    
-    result.fold(
-      (failure) {
-        state = AuthState(
-          status: AuthStatus.error,
-          errorMessage: failure.message,
-        );
-      },
-      (user) {
-        state = AuthState(
-          status: AuthStatus.authenticated,
-          user: user,
         );
       },
     );
@@ -232,69 +194,37 @@ class AuthNotifier extends StateNotifier<AuthState> {
       },
     );
   }
-  
-  /// Forgot password
-  Future<bool> forgotPassword({required String email}) async {
-    state = state.copyWith(status: AuthStatus.loading, errorMessage: null);
-    
-    final result = await _forgotPasswordUseCase(
-      ForgotPasswordParams(email: email),
-    );
-    
-    return result.fold(
-      (failure) {
-        state = state.copyWith(
-          status: AuthStatus.error,
-          errorMessage: failure.message,
-        );
-        return false;
-      },
-      (_) {
-        state = state.copyWith(status: AuthStatus.unauthenticated);
-        return true;
-      },
-    );
+
+  /// Register dummy
+  Future<void> register({
+    required String email,
+    required String password,
+    required String name,
+  }) async {
+    // Dummy not supported by Omnicore
+    state = AuthState(status: AuthStatus.error, errorMessage: 'Registrar no soportado');
   }
-  
-  /// Update user profile
+
+  /// Forgot password dummy
+  Future<bool> forgotPassword({required String email}) async {
+    return false;
+  }
+
+  /// Update user profile dummy
   Future<bool> updateProfile({
     String? name,
     String? phone,
     DateTime? birthDate,
   }) async {
-    if (!state.isAuthenticated) return false;
-    
-    final result = await _authRepository.updateProfile(
-      name: name,
-      phone: phone,
-      birthDate: birthDate,
-    );
-    
-    return result.fold(
-      (failure) => false,
-      (user) {
-        state = state.copyWith(user: user);
-        return true;
-      },
-    );
+    return false;
   }
 
-  /// Change user password
+  /// Change user password dummy
   Future<bool> changePassword({
     required String currentPassword,
     required String newPassword,
   }) async {
-    if (!state.isAuthenticated) return false;
-
-    final result = await _authRepository.changePassword(
-      currentPassword: currentPassword,
-      newPassword: newPassword,
-    );
-
-    return result.fold(
-      (failure) => false,
-      (_) => true,
-    );
+    return false;
   }
 
   /// Clear error message
@@ -313,16 +243,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
 // Auth provider
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
   final loginUseCase = ref.watch(loginUseCaseProvider);
-  final registerUseCase = ref.watch(registerUseCaseProvider);
   final logoutUseCase = ref.watch(logoutUseCaseProvider);
-  final forgotPasswordUseCase = ref.watch(forgotPasswordUseCaseProvider);
+  final getMeUseCase = ref.watch(getMeUseCaseProvider);
   final authRepository = ref.watch(authRepositoryProvider);
   
   return AuthNotifier(
     loginUseCase: loginUseCase,
-    registerUseCase: registerUseCase,
     logoutUseCase: logoutUseCase,
-    forgotPasswordUseCase: forgotPasswordUseCase,
+    getMeUseCase: getMeUseCase,
     authRepository: authRepository,
   );
 });

@@ -23,9 +23,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   void initState() {
     super.initState();
     final user = ref.read(authProvider).user;
-    _nameController = TextEditingController(text: user?.name ?? '');
-    _phoneController = TextEditingController(text: user?.phone ?? '');
-    _birthDate = user?.birthDate;
+    _nameController = TextEditingController(text: user?.displayName ?? '');
+    _phoneController = TextEditingController(text: user?.persona?.celular ?? '');
+    _birthDate = user?.dateJoined;
   }
 
   @override
@@ -123,7 +123,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
               Center(
                 child: _AvatarPreview(
                   initials: ref.watch(authProvider).user?.initials ?? 'U',
-                  avatarUrl: ref.watch(authProvider).user?.avatar,
+                  avatarUrl: null,
                 ),
               ),
               const SizedBox(height: 32),

@@ -27,8 +27,8 @@ class ProfileScreen extends ConsumerWidget {
             name: user?.displayName ?? 'Usuario',
             email: user?.email ?? '',
             initials: user?.initials ?? 'U',
-            role: user?.role.value ?? 'user',
-            avatarUrl: user?.avatar,
+            role: user?.perfiles.firstOrNull?.perfil ?? 'user',
+            avatarUrl: null,
           ),
           const SizedBox(height: 28),
 

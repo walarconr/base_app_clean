@@ -211,10 +211,10 @@ class _DrawerHeader extends StatelessWidget {
               ),
             ),
             child: Center(
-              child: user?.avatar != null
+              child: false
                   ? ClipOval(
                       child: Image.network(
-                        user!.avatar!,
+                        '',
                         width: 60,
                         height: 60,
                         fit: BoxFit.cover,

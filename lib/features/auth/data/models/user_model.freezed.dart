@@ -20,23 +20,19 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$UserModel {
-  String get id => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String? get avatar => throw _privateConstructorUsedError;
-  String? get phone => throw _privateConstructorUsedError;
-  @JsonKey(name: 'birth_date')
-  DateTime? get birthDate => throw _privateConstructorUsedError;
-  String get role => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_email_verified')
-  bool get isEmailVerified => throw _privateConstructorUsedError;
-  @JsonKey(name: 'is_active')
-  bool get isActive => throw _privateConstructorUsedError;
-  @JsonKey(name: 'created_at')
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  @JsonKey(name: 'updated_at')
-  DateTime get updatedAt => throw _privateConstructorUsedError;
-  Map<String, dynamic>? get metadata => throw _privateConstructorUsedError;
+  String get username => throw _privateConstructorUsedError;
+  @JsonKey(name: 'first_name')
+  String get firstName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'last_name')
+  String get lastName => throw _privateConstructorUsedError;
+  @JsonKey(name: 'is_verified')
+  bool get isVerified => throw _privateConstructorUsedError;
+  @JsonKey(name: 'date_joined')
+  DateTime get dateJoined => throw _privateConstructorUsedError;
+  PersonaModel? get persona => throw _privateConstructorUsedError;
+  List<PerfilModel> get perfiles => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -50,18 +46,17 @@ abstract class $UserModelCopyWith<$Res> {
       _$UserModelCopyWithImpl<$Res, UserModel>;
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String email,
-      String name,
-      String? avatar,
-      String? phone,
-      @JsonKey(name: 'birth_date') DateTime? birthDate,
-      String role,
-      @JsonKey(name: 'is_email_verified') bool isEmailVerified,
-      @JsonKey(name: 'is_active') bool isActive,
-      @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'updated_at') DateTime updatedAt,
-      Map<String, dynamic>? metadata});
+      String username,
+      @JsonKey(name: 'first_name') String firstName,
+      @JsonKey(name: 'last_name') String lastName,
+      @JsonKey(name: 'is_verified') bool isVerified,
+      @JsonKey(name: 'date_joined') DateTime dateJoined,
+      PersonaModel? persona,
+      List<PerfilModel> perfiles});
+
+  $PersonaModelCopyWith<$Res>? get persona;
 }
 
 /// @nodoc
@@ -79,67 +74,64 @@ class _$UserModelCopyWithImpl<$Res, $Val extends UserModel>
   $Res call({
     Object? id = null,
     Object? email = null,
-    Object? name = null,
-    Object? avatar = freezed,
-    Object? phone = freezed,
-    Object? birthDate = freezed,
-    Object? role = null,
-    Object? isEmailVerified = null,
-    Object? isActive = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-    Object? metadata = freezed,
+    Object? username = null,
+    Object? firstName = null,
+    Object? lastName = null,
+    Object? isVerified = null,
+    Object? dateJoined = null,
+    Object? persona = freezed,
+    Object? perfiles = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
               as String,
-      avatar: freezed == avatar
-          ? _value.avatar
-          : avatar // ignore: cast_nullable_to_non_nullable
-              as String?,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      birthDate: freezed == birthDate
-          ? _value.birthDate
-          : birthDate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      role: null == role
-          ? _value.role
-          : role // ignore: cast_nullable_to_non_nullable
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
               as String,
-      isEmailVerified: null == isEmailVerified
-          ? _value.isEmailVerified
-          : isEmailVerified // ignore: cast_nullable_to_non_nullable
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String,
+      isVerified: null == isVerified
+          ? _value.isVerified
+          : isVerified // ignore: cast_nullable_to_non_nullable
               as bool,
-      isActive: null == isActive
-          ? _value.isActive
-          : isActive // ignore: cast_nullable_to_non_nullable
-              as bool,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
+      dateJoined: null == dateJoined
+          ? _value.dateJoined
+          : dateJoined // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      metadata: freezed == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
+      persona: freezed == persona
+          ? _value.persona
+          : persona // ignore: cast_nullable_to_non_nullable
+              as PersonaModel?,
+      perfiles: null == perfiles
+          ? _value.perfiles
+          : perfiles // ignore: cast_nullable_to_non_nullable
+              as List<PerfilModel>,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $PersonaModelCopyWith<$Res>? get persona {
+    if (_value.persona == null) {
+      return null;
+    }
+
+    return $PersonaModelCopyWith<$Res>(_value.persona!, (value) {
+      return _then(_value.copyWith(persona: value) as $Val);
+    });
   }
 }
 
@@ -152,18 +144,18 @@ abstract class _$$UserModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {int id,
       String email,
-      String name,
-      String? avatar,
-      String? phone,
-      @JsonKey(name: 'birth_date') DateTime? birthDate,
-      String role,
-      @JsonKey(name: 'is_email_verified') bool isEmailVerified,
-      @JsonKey(name: 'is_active') bool isActive,
-      @JsonKey(name: 'created_at') DateTime createdAt,
-      @JsonKey(name: 'updated_at') DateTime updatedAt,
-      Map<String, dynamic>? metadata});
+      String username,
+      @JsonKey(name: 'first_name') String firstName,
+      @JsonKey(name: 'last_name') String lastName,
+      @JsonKey(name: 'is_verified') bool isVerified,
+      @JsonKey(name: 'date_joined') DateTime dateJoined,
+      PersonaModel? persona,
+      List<PerfilModel> perfiles});
+
+  @override
+  $PersonaModelCopyWith<$Res>? get persona;
 }
 
 /// @nodoc
@@ -179,66 +171,51 @@ class __$$UserModelImplCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? email = null,
-    Object? name = null,
-    Object? avatar = freezed,
-    Object? phone = freezed,
-    Object? birthDate = freezed,
-    Object? role = null,
-    Object? isEmailVerified = null,
-    Object? isActive = null,
-    Object? createdAt = null,
-    Object? updatedAt = null,
-    Object? metadata = freezed,
+    Object? username = null,
+    Object? firstName = null,
+    Object? lastName = null,
+    Object? isVerified = null,
+    Object? dateJoined = null,
+    Object? persona = freezed,
+    Object? perfiles = null,
   }) {
     return _then(_$UserModelImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as int,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      username: null == username
+          ? _value.username
+          : username // ignore: cast_nullable_to_non_nullable
               as String,
-      avatar: freezed == avatar
-          ? _value.avatar
-          : avatar // ignore: cast_nullable_to_non_nullable
-              as String?,
-      phone: freezed == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String?,
-      birthDate: freezed == birthDate
-          ? _value.birthDate
-          : birthDate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      role: null == role
-          ? _value.role
-          : role // ignore: cast_nullable_to_non_nullable
+      firstName: null == firstName
+          ? _value.firstName
+          : firstName // ignore: cast_nullable_to_non_nullable
               as String,
-      isEmailVerified: null == isEmailVerified
-          ? _value.isEmailVerified
-          : isEmailVerified // ignore: cast_nullable_to_non_nullable
+      lastName: null == lastName
+          ? _value.lastName
+          : lastName // ignore: cast_nullable_to_non_nullable
+              as String,
+      isVerified: null == isVerified
+          ? _value.isVerified
+          : isVerified // ignore: cast_nullable_to_non_nullable
               as bool,
-      isActive: null == isActive
-          ? _value.isActive
-          : isActive // ignore: cast_nullable_to_non_nullable
-              as bool,
-      createdAt: null == createdAt
-          ? _value.createdAt
-          : createdAt // ignore: cast_nullable_to_non_nullable
+      dateJoined: null == dateJoined
+          ? _value.dateJoined
+          : dateJoined // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      updatedAt: null == updatedAt
-          ? _value.updatedAt
-          : updatedAt // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      metadata: freezed == metadata
-          ? _value._metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
+      persona: freezed == persona
+          ? _value.persona
+          : persona // ignore: cast_nullable_to_non_nullable
+              as PersonaModel?,
+      perfiles: null == perfiles
+          ? _value._perfiles
+          : perfiles // ignore: cast_nullable_to_non_nullable
+              as List<PerfilModel>,
     ));
   }
 }
@@ -249,63 +226,51 @@ class _$UserModelImpl extends _UserModel {
   const _$UserModelImpl(
       {required this.id,
       required this.email,
-      required this.name,
-      this.avatar,
-      this.phone,
-      @JsonKey(name: 'birth_date') this.birthDate,
-      this.role = 'user',
-      @JsonKey(name: 'is_email_verified') this.isEmailVerified = false,
-      @JsonKey(name: 'is_active') this.isActive = true,
-      @JsonKey(name: 'created_at') required this.createdAt,
-      @JsonKey(name: 'updated_at') required this.updatedAt,
-      final Map<String, dynamic>? metadata})
-      : _metadata = metadata,
+      required this.username,
+      @JsonKey(name: 'first_name') this.firstName = '',
+      @JsonKey(name: 'last_name') this.lastName = '',
+      @JsonKey(name: 'is_verified') this.isVerified = false,
+      @JsonKey(name: 'date_joined') required this.dateJoined,
+      this.persona,
+      final List<PerfilModel> perfiles = const []})
+      : _perfiles = perfiles,
         super._();
 
   factory _$UserModelImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserModelImplFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
   final String email;
   @override
-  final String name;
+  final String username;
   @override
-  final String? avatar;
+  @JsonKey(name: 'first_name')
+  final String firstName;
   @override
-  final String? phone;
+  @JsonKey(name: 'last_name')
+  final String lastName;
   @override
-  @JsonKey(name: 'birth_date')
-  final DateTime? birthDate;
+  @JsonKey(name: 'is_verified')
+  final bool isVerified;
+  @override
+  @JsonKey(name: 'date_joined')
+  final DateTime dateJoined;
+  @override
+  final PersonaModel? persona;
+  final List<PerfilModel> _perfiles;
   @override
   @JsonKey()
-  final String role;
-  @override
-  @JsonKey(name: 'is_email_verified')
-  final bool isEmailVerified;
-  @override
-  @JsonKey(name: 'is_active')
-  final bool isActive;
-  @override
-  @JsonKey(name: 'created_at')
-  final DateTime createdAt;
-  @override
-  @JsonKey(name: 'updated_at')
-  final DateTime updatedAt;
-  final Map<String, dynamic>? _metadata;
-  @override
-  Map<String, dynamic>? get metadata {
-    final value = _metadata;
-    if (value == null) return null;
-    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+  List<PerfilModel> get perfiles {
+    if (_perfiles is EqualUnmodifiableListView) return _perfiles;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
+    return EqualUnmodifiableListView(_perfiles);
   }
 
   @override
   String toString() {
-    return 'UserModel(id: $id, email: $email, name: $name, avatar: $avatar, phone: $phone, birthDate: $birthDate, role: $role, isEmailVerified: $isEmailVerified, isActive: $isActive, createdAt: $createdAt, updatedAt: $updatedAt, metadata: $metadata)';
+    return 'UserModel(id: $id, email: $email, username: $username, firstName: $firstName, lastName: $lastName, isVerified: $isVerified, dateJoined: $dateJoined, persona: $persona, perfiles: $perfiles)';
   }
 
   @override
@@ -315,21 +280,18 @@ class _$UserModelImpl extends _UserModel {
             other is _$UserModelImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.avatar, avatar) || other.avatar == avatar) &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.birthDate, birthDate) ||
-                other.birthDate == birthDate) &&
-            (identical(other.role, role) || other.role == role) &&
-            (identical(other.isEmailVerified, isEmailVerified) ||
-                other.isEmailVerified == isEmailVerified) &&
-            (identical(other.isActive, isActive) ||
-                other.isActive == isActive) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt) &&
-            const DeepCollectionEquality().equals(other._metadata, _metadata));
+            (identical(other.username, username) ||
+                other.username == username) &&
+            (identical(other.firstName, firstName) ||
+                other.firstName == firstName) &&
+            (identical(other.lastName, lastName) ||
+                other.lastName == lastName) &&
+            (identical(other.isVerified, isVerified) ||
+                other.isVerified == isVerified) &&
+            (identical(other.dateJoined, dateJoined) ||
+                other.dateJoined == dateJoined) &&
+            (identical(other.persona, persona) || other.persona == persona) &&
+            const DeepCollectionEquality().equals(other._perfiles, _perfiles));
   }
 
   @JsonKey(ignore: true)
@@ -338,16 +300,13 @@ class _$UserModelImpl extends _UserModel {
       runtimeType,
       id,
       email,
-      name,
-      avatar,
-      phone,
-      birthDate,
-      role,
-      isEmailVerified,
-      isActive,
-      createdAt,
-      updatedAt,
-      const DeepCollectionEquality().hash(_metadata));
+      username,
+      firstName,
+      lastName,
+      isVerified,
+      dateJoined,
+      persona,
+      const DeepCollectionEquality().hash(_perfiles));
 
   @JsonKey(ignore: true)
   @override
@@ -365,52 +324,42 @@ class _$UserModelImpl extends _UserModel {
 
 abstract class _UserModel extends UserModel {
   const factory _UserModel(
-      {required final String id,
+      {required final int id,
       required final String email,
-      required final String name,
-      final String? avatar,
-      final String? phone,
-      @JsonKey(name: 'birth_date') final DateTime? birthDate,
-      final String role,
-      @JsonKey(name: 'is_email_verified') final bool isEmailVerified,
-      @JsonKey(name: 'is_active') final bool isActive,
-      @JsonKey(name: 'created_at') required final DateTime createdAt,
-      @JsonKey(name: 'updated_at') required final DateTime updatedAt,
-      final Map<String, dynamic>? metadata}) = _$UserModelImpl;
+      required final String username,
+      @JsonKey(name: 'first_name') final String firstName,
+      @JsonKey(name: 'last_name') final String lastName,
+      @JsonKey(name: 'is_verified') final bool isVerified,
+      @JsonKey(name: 'date_joined') required final DateTime dateJoined,
+      final PersonaModel? persona,
+      final List<PerfilModel> perfiles}) = _$UserModelImpl;
   const _UserModel._() : super._();
 
   factory _UserModel.fromJson(Map<String, dynamic> json) =
       _$UserModelImpl.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
   String get email;
   @override
-  String get name;
+  String get username;
   @override
-  String? get avatar;
+  @JsonKey(name: 'first_name')
+  String get firstName;
   @override
-  String? get phone;
+  @JsonKey(name: 'last_name')
+  String get lastName;
   @override
-  @JsonKey(name: 'birth_date')
-  DateTime? get birthDate;
+  @JsonKey(name: 'is_verified')
+  bool get isVerified;
   @override
-  String get role;
+  @JsonKey(name: 'date_joined')
+  DateTime get dateJoined;
   @override
-  @JsonKey(name: 'is_email_verified')
-  bool get isEmailVerified;
+  PersonaModel? get persona;
   @override
-  @JsonKey(name: 'is_active')
-  bool get isActive;
-  @override
-  @JsonKey(name: 'created_at')
-  DateTime get createdAt;
-  @override
-  @JsonKey(name: 'updated_at')
-  DateTime get updatedAt;
-  @override
-  Map<String, dynamic>? get metadata;
+  List<PerfilModel> get perfiles;
   @override
   @JsonKey(ignore: true)
   _$$UserModelImplCopyWith<_$UserModelImpl> get copyWith =>

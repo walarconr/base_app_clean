@@ -15,13 +15,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -31,7 +31,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     FocusScope.of(context).unfocus();
 
     await ref.read(authProvider.notifier).login(
-          username: _usernameController.text.trim(),
+          email: _emailController.text.trim(),
           password: _passwordController.text,
         );
 
@@ -89,18 +89,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 28),
 
-                        // Usuario
+                        // Correo Electrónico
                         TextFormField(
-                          controller: _usernameController,
-                          keyboardType: TextInputType.text,
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
                           autocorrect: false,
                           textInputAction: TextInputAction.next,
                           decoration: const InputDecoration(
-                            labelText: 'Usuario',
-                            prefixIcon: Icon(Icons.person_outline_rounded),
+                            labelText: 'Correo Electrónico',
+                            prefixIcon: Icon(Icons.email_outlined),
                           ),
                           validator: (v) => (v == null || v.trim().isEmpty)
-                              ? 'El usuario es requerido'
+                              ? 'El correo es requerido'
                               : null,
                           enabled: !authState.isLoading,
                         ),
