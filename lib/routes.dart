@@ -26,7 +26,7 @@ import 'features/profile/presentation/change_password_screen.dart';
 final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _RouterNotifier();
 
-  // Keep this ref.listen in the provider body — NOT inside a class constructor.
+  // Keep this ref.listen in the provider body — NOT inside a class constructor. //
   // This guarantees Riverpod tracks the subscription for the provider's lifetime.
   ref.listen<AuthState>(authProvider, (_, __) => notifier.notify());
 
