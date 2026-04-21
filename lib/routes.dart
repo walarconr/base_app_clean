@@ -27,7 +27,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final notifier = _RouterNotifier();
 
   // Keep this ref.listen in the provider body — NOT inside a class constructor.
-  // This guarantees Riverpod tracks the subscription for the provider's lifetime.
+  // This guarantees Riverpod tracks the subscription for the provider's lifetime.**
   ref.listen<AuthState>(authProvider, (_, __) => notifier.notify());
 
   final router = GoRouter(
